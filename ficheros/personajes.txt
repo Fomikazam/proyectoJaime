@@ -1,0 +1,3 @@
+1;Emilie;5;1;Jeje;3;Dendro
+2;Cyno;5;2;Jeje2;4;Electro
+3;mlmlml;4;1;Jeje;3;Hydro

@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="clases.Arma" table="armas">
+		<id name="id" type="int">
+			<column name="id"/>
+		</id>
+		<property name="nombre" type="string">
+			<column name="nombre" length="20" not-null="true" />
+		</property>
+		<property name="rareza" type="int">
+			<column name="rareza" length="1" not-null="true" />
+		</property>	
+		<set name="equipados" inverse="true" cascade="all">
+			<key column="idArma" not-null="true"/>
+			<one-to-many class="clases.Personaje"/>
+		</set>
+		
+	</class>
+
+</hibernate-mapping>

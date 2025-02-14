@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="gbk"?>
+<personajes>
+  <personaje id="1">
+    <nombre>Emilie</nombre>
+    <rareza>5</rareza>
+    <arma>
+      <id>1</id>
+      <nombre>Emilis spear</nombre>
+      <rareza>4</rareza>
+    </arma>
+    <elemento>Dendro</elemento>
+  </personaje>
+</personajes>
