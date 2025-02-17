@@ -14,7 +14,7 @@ public class Arma implements Serializable {
 	private int id = 0;
 	private String nombre = "";
 	private int rareza = 0;
-	private Set<Personaje> equipados = new HashSet<Personaje>();
+	private Set<Personaje> equipados = new HashSet<>();
 	
 	public Arma(int id, String name, int rarity) {
 		super();
@@ -23,21 +23,13 @@ public class Arma implements Serializable {
 		this.rareza = rarity;
 	}
 	
-	public Arma() {
-		
-	}
+	public Arma() {	}
 	
-	public Set<Personaje> getEquipados() {
-		return equipados;
-	}
-
+	public Set<Personaje> getEquipados() { return equipados; }
 	public void setEquipados(Set<Personaje> equipados) {
 		this.equipados = equipados;
 	}
-
-	public int getId() {
-		return id;
-	}
+	public int getId() { return id; }
 	public void setId(int id) {
 		this.id = id;
 	}

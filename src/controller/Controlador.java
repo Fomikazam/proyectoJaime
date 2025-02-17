@@ -36,8 +36,8 @@ public class Controlador {
     private int tipo = -1;
     private int menu = -1;
     private int entidad = -1;
-    private Connection conn;
-    private Session s;
+    private Connection connection;
+    private Session session;
 
     public Controlador() {
         elegirAcceso();
@@ -53,10 +53,10 @@ public class Controlador {
                 } else {
                     mapaArma = modelo.leerArma(mapa);
                 }
-                menu = vista.preguntar(scan, "Dígame una opción:\n1.Ver todos\t2.Buscar\t3.Insertar\n4.Modificar\t5.Borrar\t6.Transferir\n7.Cambiar archivo\t0.Salir");
+                menu = vista.preguntarInt(scan, "Dígame una opción:\n1.Ver todos\t2.Buscar\t3.Insertar\n4.Modificar\t5.Borrar\t6.Transferir\n7.Cambiar archivo\t0.Salir");
                 switch (menu) {
                     case 1:
-                        entidad = vista.preguntar(scan, "¿Desea leer personaje(1) o arma(2)?");
+                        entidad = vista.preguntarInt(scan, "¿Desea leer personaje(1) o arma(2)?");
                         switch (entidad) {
                             case 1:
                                 vista.mostrar(mapa);
@@ -71,11 +71,11 @@ public class Controlador {
                         break;
                     case 2:
                         int idBuscar = -1;
-                        entidad = vista.preguntar(scan, "¿Desea buscar personaje(1) o arma(2)?");
+                        entidad = vista.preguntarInt(scan, "¿Desea buscar personaje(1) o arma(2)?");
                         switch (entidad) {
                             case 1:
                                 while (idBuscar != 0) {
-                                    idBuscar = vista.preguntar(scan, "Dígame el ID del personaje a buscar (pulse 0 para retroceder): ");
+                                    idBuscar = vista.preguntarInt(scan, "Dígame el ID del personaje a buscar (pulse 0 para retroceder): ");
                                     Personaje personajeBuscado;
                                     if (tipo > 4) {
                                         personajeBuscado = modelo.buscar(idBuscar);
@@ -87,7 +87,7 @@ public class Controlador {
                                 break;
                             case 2:
                                 while (idBuscar != 0) {
-                                    idBuscar = vista.preguntar(scan, "Dígame el ID del arma a buscar (pulse 0 para retroceder): ");
+                                    idBuscar = vista.preguntarInt(scan, "Dígame el ID del arma a buscar (pulse 0 para retroceder): ");
                                     Arma armaBuscada;
                                     if (tipo > 4) {
                                         armaBuscada = modelo.buscarArma(idBuscar);
@@ -104,7 +104,7 @@ public class Controlador {
                     case 3:
                         try {
                             if (tipo > 4) {
-                                entidad = vista.preguntar(scan, "¿Desea añadir personaje(1) o arma(2)?");
+                                entidad = vista.preguntarInt(scan, "¿Desea añadir personaje(1) o arma(2)?");
                                 switch (entidad) {
                                     case 1:
                                         Personaje anadir = generarPersonaje();
@@ -132,12 +132,12 @@ public class Controlador {
                     case 4:
                         try {
                             if (tipo > 4) {
-                                entidad = vista.preguntar(scan, "¿Desea modificar personaje(1) o arma(2)?");
+                                entidad = vista.preguntarInt(scan, "¿Desea modificar personaje(1) o arma(2)?");
                                 switch (entidad) {
                                     case 1:
                                         vista.mostrar("Estos son los personajes disponibles:");
                                         vista.mostrar(mapa);
-                                        int idModificar = vista.preguntar(scan, "Dígame el id del personaje a modificar: ");
+                                        int idModificar = vista.preguntarInt(scan, "Dígame el id del personaje a modificar: ");
                                         Personaje personajeMod = modelo.buscar(mapa, idModificar);
                                         if (personajeMod == null) {
                                             vista.mostrar("Personaje no encontrado");
@@ -149,7 +149,7 @@ public class Controlador {
                                     case 2:
                                         vista.mostrar("Estas son las armas disponibles:");
                                         vista.mostrarArmas(mapaArma);
-                                        int idModArma = vista.preguntar(scan, "Dígame el id del arma a modificar: ");
+                                        int idModArma = vista.preguntarInt(scan, "Dígame el id del arma a modificar: ");
                                         Arma armaMod = modelo.buscarArma(mapaArma, idModArma);
                                         if (armaMod == null) {
                                             vista.mostrar("Arma no encontrada");
@@ -159,7 +159,7 @@ public class Controlador {
                                         break;
                                 }
                             } else {
-                                int idModificar = vista.preguntar(scan, "Dígame el id del personaje a modificar: ");
+                                int idModificar = vista.preguntarInt(scan, "Dígame el id del personaje a modificar: ");
                                 Personaje personajeMod = modelo.buscar(mapa, idModificar);
                                 if (personajeMod == null) {
                                     vista.mostrar("Personaje no encontrado");
@@ -180,29 +180,37 @@ public class Controlador {
                     case 5:
                         try {
                             if (tipo > 3) {
-                                entidad = vista.preguntar(scan, "¿Desea borrar personaje(1) o arma(2)?");
+                                entidad = vista.preguntarInt(scan, "¿Desea borrar personaje(1) o arma(2)?");
                                 switch (entidad) {
                                     case 1:
-                                        int idElim = vista.preguntar(scan, "Dígame el id del personaje a eliminar: ");
+                                        int idElim = vista.preguntarInt(scan, "Dígame el id del personaje a eliminar: ");
                                         Personaje personajeElim = modelo.buscar(mapa, idElim);
                                         if (personajeElim == null) {
                                             vista.mostrar("Personaje no encontrado");
                                         } else {
+                                            if (tipo == 7) {
+                                                modelo.eliminar(personajeElim);
+                                                return;
+                                            }
                                             modelo.eliminar(personajeElim.getId());
                                         }
                                         break;
                                     case 2:
-                                        int idElimArma = vista.preguntar(scan, "Dígame el id del arma a eliminar: ");
+                                        int idElimArma = vista.preguntarInt(scan, "Dígame el id del arma a eliminar: ");
                                         Arma armaElim = modelo.buscarArma(mapaArma, idElimArma);
                                         if (armaElim == null) {
                                             vista.mostrar("Arma no encontrada");
                                         } else {
+                                            if (tipo == 7) {
+                                                modelo.eliminarArma(armaElim);
+                                                return;
+                                            }
                                             modelo.eliminarArma(armaElim.getId());
                                         }
                                         break;
                                 }
                             } else {
-                                int idElim = vista.preguntar(scan, "Dígame el id del personaje a eliminar: ");
+                                int idElim = vista.preguntarInt(scan, "Dígame el id del personaje a eliminar: ");
                                 Personaje pElimi = modelo.buscar(mapa, idElim);
                                 if (pElimi == null) {
                                     vista.mostrar("Personaje no encontrado");
@@ -223,7 +231,7 @@ public class Controlador {
                     case 6:
                         try {
                             if (tipo > 4) {
-                                entidad = vista.preguntar(scan, "¿Desea transferir personaje(1) o arma(2)?");
+                                entidad = vista.preguntarInt(scan, "¿Desea transferir personaje(1) o arma(2)?");
                                 switch (entidad) {
                                     case 1:
                                         exportarPersonajes();
@@ -253,10 +261,10 @@ public class Controlador {
                         elegirAcceso();
                         break;
                     case 0:
-                        if (conn != null)
-                            conn.close();
-                        if (s != null)
-                            s.close();
+                        if (connection != null)
+                            connection.close();
+                        if (session != null)
+                            session.close();
                         vista.mostrar("Nos vemos pronto");
                         break;
                     default:
@@ -282,17 +290,15 @@ public class Controlador {
     }
 
     private void modificarPersonaje(Personaje personajeAux) throws IOException, ClassNotFoundException, SQLException {
-        int campo = vista.preguntar(scan, "¿Qué desea cambiar?\n1. nombre\t2. rareza\n3. arma\t4. elemento");
+        int campo = vista.preguntarInt(scan, "¿Qué desea cambiar?\n1. nombre\t2. rareza\n3. arma\t4. elemento");
         String valor = "";
-        Personaje auxiliar = personajeAux;
-        int idPrimera = personajeAux.getId();
         switch (campo) {
-            case 1:
+            case 1 -> {
                 boolean repetido = true;
                 String nombre = "";
                 if (mapa != null) {
                     while (repetido) {
-                        nombre = vista.preguntarS(scan, "Dígame el nombre: ");
+                        nombre = vista.preguntarStr(scan, "Dígame el nombre: ");
                         repetido = modelo.comprobarNombre(nombre, mapa);
                         if (repetido) {
                             vista.mostrar("Su nombre  '" + nombre + "' ya está siendo utilizado.");
@@ -301,37 +307,70 @@ public class Controlador {
                 }
                 valor = nombre;
                 personajeAux.setNombre(nombre);
-                break;
-            case 2:
-                int rareza = vista.preguntar(scan, "Nueva rareza: ");
+            }
+            case 2 -> {
+                int rareza = vista.preguntarInt(scan, "Nueva rareza: ");
                 valor = String.valueOf(rareza);
                 personajeAux.setRareza(rareza);
-                break;
-            case 3:
+            }
+            case 3 -> {
                 Arma arma = generarArma(true);
                 personajeAux.setArma(arma);
                 assert arma != null;
                 valor = String.valueOf(arma.getId());
-                break;
-            case 4:
-                String elemento = vista.preguntarS(scan, "Nuevo elemento: ");
+            }
+            case 4 -> {
+                String elemento = "";
+                boolean salir = true;
+                while (salir) {
+                    switch (vista.preguntarInt(scan, "Dígame el elemento: \n1.Pyro 2.Hydro 3.Electro 4.Cryo\n\t5.Geo 6.Dendro 7.Anemo")) {
+                        case 1 -> {
+                            elemento = "Pyro";
+                            salir = false;
+                        }
+                        case 2 -> {
+                            elemento = "Hydro";
+                            salir = false;
+                        }
+                        case 3 -> {
+                            elemento = "Electro";
+                            salir = false;
+                        }
+                        case 4 -> {
+                            elemento = "Cryo";
+                            salir = false;
+                        }
+                        case 5 -> {
+                            elemento = "Geo";
+                            salir = false;
+                        }
+                        case 6 -> {
+                            elemento = "Dendro";
+                            salir = false;
+                        }
+                        case 7 -> {
+                            elemento = "Anemo";
+                            salir = false;
+                        }
+                        default -> vista.mostrar("Seleccione un número del 1 al 7");
+                    }
+                }
                 personajeAux.setElemento(elemento);
-                valor = elemento;
-                break;
+            }
         }
-        if (tipo == 6) {
-            modelo.modificar(auxiliar, personajeAux);
+        if (tipo == 7) {
+            modelo.modificar(personajeAux);
             return;
         }
         if (tipo > 3) {
-            modelo.modificar(idPrimera, campo, valor);
+            modelo.modificar(personajeAux.getId(), campo, valor);
         } else {
             modelo.modificar(mapa, personajeAux);
         }
     }
 
     private void modificarArma(Arma arma) throws IOException, ClassNotFoundException, SQLException {
-        int campo = vista.preguntar(scan, "¿Qué desea cambiar?\n1. nombre\t2. rareza");
+        int campo = vista.preguntarInt(scan, "¿Qué desea cambiar?\n1. nombre\t2. rareza");
         String valor = "";
         int idPrimera = arma.getId();
         switch (campo) {
@@ -339,24 +378,29 @@ public class Controlador {
                 boolean repetido = true;
                 String nombre = "";
                 while (repetido) {
-                    nombre = vista.preguntarS(scan, "Dígame el nombre del arma: ");
+                    nombre = vista.preguntarStr(scan, "Dígame el nombre del arma: ");
                     repetido = modelo.comprobarNombre(nombre, mapa);
                     if (repetido) {
                         vista.mostrar("El nombre  '" + nombre + "' ya está siendo utilizado.");
                     }
                 }
                 valor = nombre;
+                arma.setNombre(nombre);
                 break;
             case 2:
-                int rareza = vista.preguntar(scan, "Introduzca la rareza: ");
+                int rareza = vista.preguntarInt(scan, "Introduzca la rareza: ");
                 valor = String.valueOf(rareza);
+                arma.setRareza(rareza);
                 break;
+        }
+        if (tipo == 7) {
+            modelo.modificarArma(arma);
         }
         modelo.modificarArma(idPrimera, campo, valor);
     }
 
     private void exportarPersonajes() throws IOException, ClassNotFoundException, JDOMException, SQLException {
-        int tipo2 = vista.preguntar(scan, "Diga el tipo de archivo al que desea exportar:\n1.Texto\t2.Binario\t3.XML\t4.XQuery\n5.MySQL\t6.SQLite\t7.Hibernate\n8.PHP\t9.Objetos\t10.Mongo");
+        int tipo2 = vista.preguntarInt(scan, "Diga el tipo de archivo al que desea exportar:\n1.Texto\t2.Binario\t3.XML\t4.XQuery\n5.MySQL\t6.SQLite\t7.Hibernate\n8.PHP\t9.Objetos\t10.Mongo");
         Modelo modelo2;
         File archivo;
         switch (tipo2) {
@@ -387,20 +431,20 @@ public class Controlador {
                 String url = "jdbc:mysql://" + hostname + ":" + port + "/" + database + "?useSSL=false";
                 String username = "root";
                 String password = "root";
-                conn = DriverManager.getConnection(url, username, password);
-                conn.setClientInfo("Tipo", "MySQL");
-                modelo2 = new ModeloBD(conn);
+                connection = DriverManager.getConnection(url, username, password);
+                connection.setClientInfo("Tipo", "MySQL");
+                modelo2 = new ModeloBD(connection);
                 modelo2.escribir(mapa, mapaArma);
                 break;
             case 6:
-                conn = DriverManager.getConnection("jdbc:sqlite:ficheros\\bdpersonajes.db");
-                modelo2 = new ModeloSQLite(conn);
+                connection = DriverManager.getConnection("jdbc:sqlite:ficheros\\bdpersonajes.db");
+                modelo2 = new ModeloSQLite(connection);
                 modelo2.escribir(mapa, mapaArma);
                 break;
             case 7:
                 SessionFactory sf = new Configuration().configure().buildSessionFactory();
-                s = sf.openSession();
-                modelo2 = new ModeloHB(s);
+                session = sf.openSession();
+                modelo2 = new ModeloHB(session);
                 modelo2.escribir(mapa, mapaArma);
                 break;
             case 8:
@@ -419,7 +463,7 @@ public class Controlador {
 
     private void exportarArmas()
             throws IOException, ClassNotFoundException, JDOMException, SQLException {
-        int tipo2 = vista.preguntar(scan, "Dígame la bd a donde quiera transferir sus armas:\n1.MySQL\t2.SQLite\t3.Hibernate\n4.PHP\t5.Mongo");
+        int tipo2 = vista.preguntarInt(scan, "Dígame la bd a donde quiera transferir sus armas:\n1.MySQL\t2.SQLite\t3.Hibernate\n4.PHP\t5.Mongo");
         Modelo modelo2;
         switch (tipo2) {
             case 1:
@@ -429,18 +473,18 @@ public class Controlador {
                 String url = "jdbc:mysql://" + hostname + ":" + port + "/" + database + "?useSSL=false";
                 String username = "root";
                 String password = "root";
-                conn = DriverManager.getConnection(url, username, password);
-                conn.setClientInfo("Tipo", "MySQL");
-                modelo2 = new ModeloBD(conn);
+                connection = DriverManager.getConnection(url, username, password);
+                connection.setClientInfo("Tipo", "MySQL");
+                modelo2 = new ModeloBD(connection);
                 modelo2.escribirArma(mapaArma);
             case 2:
-                conn = DriverManager.getConnection("jdbc:sqlite:ficheros\\bdpersonajes.db");
-                modelo2 = new ModeloSQLite(conn);
+                connection = DriverManager.getConnection("jdbc:sqlite:ficheros\\bdpersonajes.db");
+                modelo2 = new ModeloSQLite(connection);
                 modelo2.escribirArma(mapaArma);
             case 3:
                 SessionFactory sf = new Configuration().configure().buildSessionFactory();
-                s = sf.openSession();
-                modelo2 = new ModeloHB(s);
+                session = sf.openSession();
+                modelo2 = new ModeloHB(session);
                 modelo2.escribirArma(mapaArma);
             case 4:
                 break;
@@ -459,7 +503,7 @@ public class Controlador {
         File archivo;
         while (tipo > 10 || tipo < 1) {
             try {
-                tipo = vista.preguntar(scan, "Diga el tipo de archivo que desee manipular:\n1.Texto\t2.Binario\t3.XML\t4.XQuery\n5.MySQL\t6.SQLite\t7.Hibernate\n8.PHP\t9.Objetos\t10.Mongo");
+                tipo = vista.preguntarInt(scan, "Diga el tipo de archivo que desee manipular:\n1.Texto\t2.Binario\t3.XML\t4.XQuery\n5.MySQL\t6.SQLite\t7.Hibernate\n8.PHP\t9.Objetos\t10.Mongo");
                 switch (tipo) {
                     case 1:
                         archivo = new File("ficheros\\personajes.txt");
@@ -488,18 +532,18 @@ public class Controlador {
                         String url = "jdbc:mysql://" + hostname + ":" + port + "/" + database + "?useSSL=false";
                         String username = "root";
                         String password = "root";
-                        conn = DriverManager.getConnection(url, username, password);
-                        modelo = new ModeloBD(conn);
+                        connection = DriverManager.getConnection(url, username, password);
+                        modelo = new ModeloBD(connection);
                         System.out.println("Creado modelo BD");
                         break;
                     case 6:
-                        conn = DriverManager.getConnection("jdbc:sqlite:ficheros\\bdpersonajes.db");
-                        modelo = new ModeloBD(conn);
+                        connection = DriverManager.getConnection("jdbc:sqlite:ficheros\\bdpersonajes.db");
+                        modelo = new ModeloBD(connection);
                         break;
                     case 7:
                         SessionFactory sf = new Configuration().configure().buildSessionFactory();
-                        s = sf.openSession();
-                        modelo = new ModeloHB(s);
+                        session = sf.openSession();
+                        modelo = new ModeloHB(session);
                         break;
                     case 8:
                         modelo = new ModeloPHP();
@@ -542,47 +586,45 @@ public class Controlador {
         String nombre = "", elemento = "";
         boolean repetido = true;
         while (repetido) {
-            nombre = vista.preguntarS(scan, "Dígame el nombre: ");
+            nombre = vista.preguntarStr(scan, "Dígame el nombre: ");
             repetido = modelo.comprobarNombre(nombre, mapa);
             if (repetido) {
                 vista.mostrar("Su nombre  '" + nombre + "' ya está siendo utilizado.");
             }
         }
-        rareza = vista.preguntar(scan, "Introduzca la rareza: ");
+        rareza = vista.preguntarInt(scan, "Introduzca la rareza: ");
         boolean salir = true;
         while (salir) {
-            switch (vista.preguntar(scan, "Dígame el elemento: \n1.Pyro 2.Hydro 3.Electro 4.Cryo\n\t5.Geo 6.Dendro 7.Anemo")) {
-                case 1:
+            switch (vista.preguntarInt(scan, "Dígame el elemento: \n1.Pyro 2.Hydro 3.Electro 4.Cryo\n\t5.Geo 6.Dendro 7.Anemo")) {
+                case 1 -> {
                     elemento = "Pyro";
                     salir = false;
-                    break;
-                case 2:
+                }
+                case 2 -> {
                     elemento = "Hydro";
                     salir = false;
-                    break;
-                case 3:
+                }
+                case 3 -> {
                     elemento = "Electro";
                     salir = false;
-                    break;
-                case 4:
+                }
+                case 4 -> {
                     elemento = "Cryo";
                     salir = false;
-                    break;
-                case 5:
+                }
+                case 5 -> {
                     elemento = "Geo";
                     salir = false;
-                    break;
-                case 6:
+                }
+                case 6 -> {
                     elemento = "Dendro";
                     salir = false;
-                    break;
-                case 7:
+                }
+                case 7 -> {
                     elemento = "Anemo";
                     salir = false;
-                    break;
-                default:
-                    vista.mostrar("Seleccione un número del 1 al 7");
-                    break;
+                }
+                default -> vista.mostrar("Seleccione un número del 1 al 7");
             }
         }
         Arma arma = generarArma(true);
@@ -590,7 +632,7 @@ public class Controlador {
     }
 
     private Arma generarArma(boolean preguntar) throws IOException, ClassNotFoundException, SQLException {
-        Arma arma = null;
+        Arma arma;
         int idArma = 1, rareza;
         for (Map.Entry<Integer, Personaje> entry : mapa.entrySet()) {
             if (entry.getKey() != idArma) {
@@ -602,7 +644,7 @@ public class Controlador {
         boolean repetido = true;
         int pArma;
         if (preguntar) {
-            pArma = vista.preguntar(scan, "¿Desea añadir una nueva arma(1) o usar una existente(2)?");
+            pArma = vista.preguntarInt(scan, "¿Desea añadir una nueva arma(1) o usar una existente(2)?");
         } else {
             pArma = 1;
         }
@@ -610,16 +652,16 @@ public class Controlador {
             case 1:
                 if (mapaArma != null) {
                     while (repetido) {
-                        nombre = vista.preguntarS(scan, "Dígame el nombre: ");
+                        nombre = vista.preguntarStr(scan, "Dígame el nombre: ");
                         repetido = modelo.comprobarNombreArma(nombre, mapaArma);
                         if (repetido) {
                             vista.mostrar("Su nombre  '" + nombre + "' ya está siendo utilizado.");
                         }
                     }
                 } else {
-                    nombre = vista.preguntarS(scan, "Dígame el nombre: ");
+                    nombre = vista.preguntarStr(scan, "Dígame el nombre: ");
                 }
-                rareza = vista.preguntar(scan, "Introduzca la rareza: ");
+                rareza = vista.preguntarInt(scan, "Introduzca la rareza: ");
                 arma = new Arma(idArma, nombre, rareza);
                 modelo.insertar(arma);
                 return arma;
@@ -627,7 +669,7 @@ public class Controlador {
                 while (true) {
                     vista.mostrar("Estas son las armas disponibles: ");
                     vista.mostrarArmas(mapaArma);
-                    idArma = vista.preguntar(scan, "Dígame la ID del arma:");
+                    idArma = vista.preguntarInt(scan, "Dígame la ID del arma:");
                     arma = modelo.buscarArma(mapaArma, idArma);
                     if (arma == null) {
                         vista.mostrar("Esa ID no está disponible");

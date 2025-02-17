@@ -13,7 +13,6 @@ import clases.Arma;
 
 public class ModeloBD extends Modelo {
 
-	HashMap<Integer, Personaje> mapa = new HashMap<Integer, Personaje>();
 	Connection conn;
 
 	public ModeloBD(Connection conn) {
@@ -21,7 +20,7 @@ public class ModeloBD extends Modelo {
 	}
 
 	public HashMap<Integer, Personaje> leer() throws SQLException {
-		HashMap<Integer, Personaje> map = new HashMap<Integer, Personaje>();
+		HashMap<Integer, Personaje> map = new HashMap<>();
 		String query = "SELECT * FROM personajes";
 		Statement st = conn.createStatement();
 		Statement stArma = conn.createStatement();
@@ -51,7 +50,7 @@ public class ModeloBD extends Modelo {
 	}
 	
 	public HashMap<Integer, Arma> leerArma() throws SQLException {
-		HashMap<Integer, Arma> map = new HashMap<Integer, Arma>();
+		HashMap<Integer, Arma> map = new HashMap<>();
 		String query = "SELECT * FROM armas";
 		Statement st = conn.createStatement();
 		Statement stArma = conn.createStatement();
@@ -137,22 +136,14 @@ public class ModeloBD extends Modelo {
 
 	public void modificar(int keyM, int campo, String valor) throws SQLException {
 		String query;
-		String campoF = "";
-		switch (campo) {
-		case 1:
-			campoF = "nombre";
-			break;
-		case 2:
-			campoF = "rareza";
-			break;
-		case 3:
-			campoF = "idArma";
-			break;
-		case 4:
-			campoF = "elemento";
-			break;
-		}
-		query = "update personajes set " + campoF + " = '" + valor + "' where id = " + keyM + ";";
+		String campoF = switch (campo) {
+            case 1 -> "nombre";
+            case 2 -> "rareza";
+            case 3 -> "idArma";
+            case 4 -> "elemento";
+            default -> "";
+        };
+        query = "update personajes set " + campoF + " = '" + valor + "' where id = " + keyM + ";";
 		Statement st = conn.createStatement();
 		st.executeUpdate(query);
 		st.close();
@@ -160,16 +151,12 @@ public class ModeloBD extends Modelo {
 	
 	public void modificarArma(int idModificar, int campo, String valor) throws SQLException {
 		String query;
-		String campoF = "";
-		switch (campo) {
-		case 1:
-			campoF = "nombre";
-			break;
-		case 2:
-			campoF = "rareza";
-			break;
-		}
-		query = "update armas set " + campoF + " = '" + valor + "' where id = " + idModificar + ";";
+		String campoF = switch (campo) {
+            case 1 -> "nombre";
+            case 2 -> "rareza";
+            default -> "";
+        };
+        query = "update armas set " + campoF + " = '" + valor + "' where id = " + idModificar + ";";
 		Statement st = conn.createStatement();
 		st.executeUpdate(query);
 		st.close();

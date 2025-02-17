@@ -13,12 +13,12 @@ public class Vista {
 
 	}
 
-	public int preguntar(Scanner scan, String mensaje) throws InputMismatchException {
+	public int preguntarInt(Scanner scan, String mensaje) throws InputMismatchException {
 		System.out.println(mensaje);
 		return Integer.parseInt(scan.nextLine());
 	}
 
-	public String preguntarS(Scanner scan, String mensaje) throws InputMismatchException {
+	public String preguntarStr(Scanner scan, String mensaje) throws InputMismatchException {
 		System.out.println(mensaje);
 		return scan.nextLine();
 	}
@@ -51,19 +51,19 @@ public class Vista {
 		}
 	}
 
-	public void mostrar(Personaje p) {
-		if (p == null) {
+	public void mostrar(Personaje personaje) {
+		if (personaje == null) {
 			System.out.println("Personaje no encontrado.");
 		} else {
-			System.out.println("¡Personaje encontrado!\n " + p);
+			System.out.println("¡Personaje encontrado!\n " + personaje);
 		}
 	}
 
-	public void mostrar(Arma w) {
-		if (w == null) {
+	public void mostrar(Arma arma) {
+		if (arma == null) {
 			System.out.println("Arma no encontrada.");
 		} else {
-			System.out.println("¡Arma encontrada!\n " + w);
+			System.out.println("¡Arma encontrada!\n " + arma);
 		}
 	}
 

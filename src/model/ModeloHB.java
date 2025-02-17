@@ -2,7 +2,6 @@ package model;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +15,6 @@ import clases.Arma;
 
 public class ModeloHB extends Modelo {
 
-	HashMap<Integer, Personaje> mapa = new HashMap<Integer, Personaje>();
 	Session s;
 
 	public ModeloHB(Session s) {
@@ -24,7 +22,7 @@ public class ModeloHB extends Modelo {
 	}
 
 	public HashMap<Integer, Personaje> leer() throws SQLException {
-		HashMap<Integer, Personaje> map = new HashMap<Integer, Personaje>();
+		HashMap<Integer, Personaje> map = new HashMap<>();
 		String query = "FROM Personaje";
 		TypedQuery<Personaje> tq = s.createQuery(query);
 		List<Personaje> results = tq.getResultList();
@@ -34,9 +32,9 @@ public class ModeloHB extends Modelo {
 		return map;
 	}
 	
-	public HashMap<Integer, Arma> leerArma() throws SQLException {
-		HashMap<Integer, Arma> mapaArma = new HashMap<Integer, Arma>();
-		String query = "FROM Weapon";
+	public HashMap<Integer, Arma> leerArma() {
+		HashMap<Integer, Arma> mapaArma = new HashMap<>();
+		String query = "FROM Arma";
 		TypedQuery<Arma> tq = s.createQuery(query);
 		List<Arma> results = tq.getResultList();
 		for (int i = 0; i < results.size(); i++) {
@@ -57,33 +55,31 @@ public class ModeloHB extends Modelo {
 		s.getTransaction().commit();
 	}
 
-	public void modificar(Personaje p)
-			throws IOException, ClassNotFoundException {
+	public void modificar(Personaje personaje) {
 		s.beginTransaction();
-		s.update(p);
+		s.update(personaje);
 		s.getTransaction().commit();
 	}
 	
-	public void modificar(Arma w)
-			throws IOException, ClassNotFoundException {
+	public void modificarArma(Arma arma) {
 		s.beginTransaction();
-		s.update(w);
+		s.update(arma);
 		s.getTransaction().commit();
 	}
 
-	public void eliminar(Personaje p) throws SQLException {
+	public void eliminar(Personaje personaje) {
 		s.beginTransaction();
-		s.delete(p);
+		s.delete(personaje);
 		s.getTransaction().commit();
 	}
 	
-	public void eliminar(Arma w) throws SQLException {
+	public void eliminarArma(Arma arma) {
 		s.beginTransaction();
-		s.delete(w);
+		s.delete(arma);
 		s.getTransaction().commit();
 	}
 	
-	public void escribir(HashMap<Integer, Personaje> mapa) throws SQLException {
+	public void escribir(HashMap<Integer, Personaje> mapa) {
 		s.beginTransaction();
 		for (Map.Entry<Integer, Personaje> entry : mapa.entrySet()) {
 			s.save(entry.getValue());
@@ -92,7 +88,7 @@ public class ModeloHB extends Modelo {
 		s.close();
 	}
 	
-	public void escribirArma(HashMap<Integer, Arma> mapaArma) throws SQLException {
+	public void escribirArma(HashMap<Integer, Arma> mapaArma) {
 		s.beginTransaction();
 		for (Map.Entry<Integer, Arma> entry : mapaArma.entrySet()) {
 			s.save(entry.getValue());

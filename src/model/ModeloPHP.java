@@ -2,7 +2,6 @@ package model;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.HashMap;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -21,9 +20,9 @@ public class ModeloPHP extends Modelo {
 	}
 
 	public HashMap<Integer, Personaje> leer() throws IOException, SQLException {
-		HashMap<Integer, Personaje> mapa = new HashMap<Integer, Personaje>();
+		HashMap<Integer, Personaje> mapa = new HashMap<>();
 		String response = encargadoPeticiones.getRequest(SERVER_PATH + "principalP.php?metodo=GET");
-		JSONObject respuesta = (JSONObject) JSONValue.parse(response.toString());
+		JSONObject respuesta = (JSONObject) JSONValue.parse(response);
 		String estado = (String) respuesta.get("estado");
 		if (estado.equals("ok")) {
 			JSONArray array = (JSONArray) respuesta.get("personajes");
@@ -31,7 +30,6 @@ public class ModeloPHP extends Modelo {
 			Arma arma;
 			String nombre, elemento;
 			int id, rareza, idArma;
-
             for (Object o : array) {
                 JSONObject row = (JSONObject) o;
                 nombre = row.get("nombre").toString();
@@ -47,8 +45,8 @@ public class ModeloPHP extends Modelo {
 		return mapa;
 	}
 	
-	public HashMap<Integer, Arma> leerArma() throws IOException, SQLException {
-		HashMap<Integer, Arma> mapaArma = new HashMap<Integer, Arma>();
+	public HashMap<Integer, Arma> leerArma() throws IOException {
+		HashMap<Integer, Arma> mapaArma = new HashMap<>();
 		String response = encargadoPeticiones.getRequest(SERVER_PATH + "principalA.php?metodo=GET");
 		JSONObject respuesta = (JSONObject) JSONValue.parse(response);
 		String estado = (String) respuesta.get("estado");
@@ -69,7 +67,7 @@ public class ModeloPHP extends Modelo {
 		return mapaArma;
 	}
 
-	public Personaje buscar(int idBuscar) throws SQLException, IOException {
+	public Personaje buscar(int idBuscar) throws IOException {
 		String response = encargadoPeticiones.getRequest(SERVER_PATH + "leePersonaje.php" + "?id=" + idBuscar);
 		JSONObject respuesta = (JSONObject) JSONValue.parse(response);
 		String estado = (String) respuesta.get("estado");
@@ -80,33 +78,33 @@ public class ModeloPHP extends Modelo {
 			String nombre, elemento, nombreArma;
 			int id, rareza, idArma, rarezaArma;
 
-			for (int i = 0; i < array.size(); i++) {
-				JSONObject row = (JSONObject) array.get(i);
-				nombre = row.get("nombre").toString();
-				id = Integer.parseInt(row.get("id").toString());
-				rareza = Integer.parseInt(row.get("rareza").toString());
-				elemento = row.get("elemento").toString();
-				idArma = Integer.parseInt(row.get("idArma").toString());
+            for (Object o : array) {
+                JSONObject row = (JSONObject) o;
+                nombre = row.get("nombre").toString();
+                id = Integer.parseInt(row.get("id").toString());
+                rareza = Integer.parseInt(row.get("rareza").toString());
+                elemento = row.get("elemento").toString();
+                idArma = Integer.parseInt(row.get("idArma").toString());
 
-				// para leer el arma
-				String responseArma = encargadoPeticiones.getRequest(SERVER_PATH + "leeArma.php" + "?id=" + idArma);
-				JSONObject respuestaArma = (JSONObject) JSONValue.parse(responseArma);
-				JSONArray arrayArma = (JSONArray) respuestaArma.get("armas");
-				JSONObject rowArma = (JSONObject) arrayArma.get(0);
-				nombreArma = rowArma.get("nombreArma").toString();
-				idArma = Integer.parseInt(rowArma.get("idArma").toString());
-				rarezaArma = Integer.parseInt(rowArma.get("rarezaArma").toString());
-				arma = new Arma(idArma, nombreArma, rarezaArma);
+                // para leer el arma
+                String responseArma = encargadoPeticiones.getRequest(SERVER_PATH + "leeArma.php" + "?id=" + idArma);
+                JSONObject respuestaArma = (JSONObject) JSONValue.parse(responseArma);
+                JSONArray arrayArma = (JSONArray) respuestaArma.get("armas");
+                JSONObject rowArma = (JSONObject) arrayArma.get(0);
+                nombreArma = rowArma.get("nombreArma").toString();
+                idArma = Integer.parseInt(rowArma.get("idArma").toString());
+                rarezaArma = Integer.parseInt(rowArma.get("rarezaArma").toString());
+                arma = new Arma(idArma, nombreArma, rarezaArma);
 
-				personaje = new Personaje(id, nombre, rareza, arma, elemento);
-			}
+                personaje = new Personaje(id, nombre, rareza, arma, elemento);
+            }
 		}
 		return personaje;
 	}
 
-	public Arma buscarArma(int idBuscar) throws SQLException, IOException {
+	public Arma buscarArma(int idBuscar) throws IOException {
 		String responseArma = encargadoPeticiones.getRequest(SERVER_PATH + "principalA.php?metodo=GET&id=" + idBuscar);
-		JSONObject respuestaArma = (JSONObject) JSONValue.parse(responseArma.toString());
+		JSONObject respuestaArma = (JSONObject) JSONValue.parse(responseArma);
 		String estado = (String) respuestaArma.get("estado");
 		Arma arma = null;
 		if (estado.equals("ok")) {
@@ -137,7 +135,7 @@ public class ModeloPHP extends Modelo {
 		String json = objPeticion.toJSONString();
 		String url = SERVER_PATH + "principalP.php?metodo=POST";
 		
-		String enviado = encargadoPeticiones.postRequest(url, json);
+		encargadoPeticiones.postRequest(url, json);
 		
 	}
 	
@@ -155,7 +153,7 @@ public class ModeloPHP extends Modelo {
 		String json = objPeticion.toJSONString();
 		String url = SERVER_PATH + "principalA.php?metodo=POST";
 		System.out.println(json);
-		String enviado = encargadoPeticiones.postRequest(url, json);
+		encargadoPeticiones.postRequest(url, json);
 		
 	}
 	
@@ -173,7 +171,7 @@ public class ModeloPHP extends Modelo {
 		String json = objPeticion.toJSONString();
 		String url = SERVER_PATH + "principalP.php?metodo=PUT";
 		
-		String enviado = encargadoPeticiones.putRequest(url, json);
+		encargadoPeticiones.putRequest(url, json);
 		
 	}
 	

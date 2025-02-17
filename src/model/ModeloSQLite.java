@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,7 +13,6 @@ import clases.Arma;
 
 public class ModeloSQLite extends Modelo {
 
-    HashMap<Integer, Personaje> mapa = new HashMap<Integer, Personaje>();
     Connection conn;
 
     public ModeloSQLite(Connection conn) {
@@ -22,7 +20,7 @@ public class ModeloSQLite extends Modelo {
     }
 
     public HashMap<Integer, Personaje> leer() throws SQLException {
-        HashMap<Integer, Personaje> map = new HashMap<Integer, Personaje>();
+        HashMap<Integer, Personaje> map = new HashMap<>();
         String query = "SELECT * FROM personajes";
         Statement st = conn.createStatement();
         Statement stArma = conn.createStatement();
@@ -49,7 +47,7 @@ public class ModeloSQLite extends Modelo {
     }
 
     public HashMap<Integer, Arma> leerArma() throws SQLException {
-        HashMap<Integer, Arma> map = new HashMap<Integer, Arma>();
+        HashMap<Integer, Arma> map = new HashMap<>();
         String query = "SELECT * FROM armas";
         Statement st = conn.createStatement();
         Statement stArma = conn.createStatement();
@@ -137,21 +135,13 @@ public class ModeloSQLite extends Modelo {
 
     public void modificar(int keyM, int campo, String valor) throws SQLException {
         String query;
-        String campoF = "";
-        switch (campo) {
-            case 1:
-                campoF = "nombre";
-                break;
-            case 2:
-                campoF = "rareza";
-                break;
-            case 3:
-                campoF = "idArma";
-                break;
-            case 4:
-                campoF = "elemento";
-                break;
-        }
+        String campoF = switch (campo) {
+            case 1 -> "nombre";
+            case 2 -> "rareza";
+            case 3 -> "idArma";
+            case 4 -> "elemento";
+            default -> "";
+        };
         query = "update personajes set " + campoF + " = '" + valor + "' where id = " + keyM + ";";
         Statement st = conn.createStatement();
         st.executeUpdate(query);
@@ -160,15 +150,11 @@ public class ModeloSQLite extends Modelo {
 
     public void modificarArma(int idModificar, int campo, String valor) throws SQLException {
         String query;
-        String campoF = "";
-        switch (campo) {
-            case 1:
-                campoF = "nombre";
-                break;
-            case 2:
-                campoF = "rareza";
-                break;
-        }
+        String campoF = switch (campo) {
+            case 1 -> "nombre";
+            case 2 -> "rareza";
+            default -> "";
+        };
         query = "update armas set " + campoF + " = '" + valor + "' where id = " + idModificar + ";";
         System.out.println(query);
         Statement st = conn.createStatement();
@@ -209,32 +195,6 @@ public class ModeloSQLite extends Modelo {
             st2.executeUpdate(query);
             st2.close();
         }
-    }
-
-    public ArrayList<Arma> leerW() throws SQLException {
-        ArrayList<Arma> mapaW = new ArrayList<Arma>();
-        String query = "SELECT * FROM armas";
-        Statement st = conn.createStatement();
-        ResultSet rs = st.executeQuery(query);
-        while (rs.next()) {
-            mapaW.add(new Arma(rs.getInt("id"), rs.getString("name"), rs.getInt("rarity")));
-        }
-        st.close();
-        return mapaW;
-    }
-
-    public boolean comprobarIdArma(String nombre) throws SQLException {
-        String query = "SELECT name FROM armas";
-        Statement st = conn.createStatement();
-        ResultSet rs = st.executeQuery(query);
-        while (rs.next()) {
-            String nombreW = rs.getString("name");
-            if (nombreW.equals(nombre)) {
-                return true;
-            }
-        }
-        st.close();
-        return false;
     }
 
 }

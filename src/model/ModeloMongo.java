@@ -28,7 +28,6 @@ public class ModeloMongo extends Modelo  {
     public HashMap<Integer, Personaje> leer() {
         MongoCursor personajesCursor = personajes.find().iterator();
         HashMap<Integer, Personaje> mapa = new HashMap<>();
-
         while (personajesCursor.hasNext()) {
             Document personajeLeido = (Document) personajesCursor.next();
             int idArma = personajeLeido.getInteger("idArma");
@@ -36,7 +35,6 @@ public class ModeloMongo extends Modelo  {
             Personaje personaje = new Personaje(personajeLeido.getInteger("id"), personajeLeido.getString("nombre"), personajeLeido.getInteger("rareza"), arma, personajeLeido.getString("elemento"));
             mapa.put(personajeLeido.getInteger("id"), personaje);
         }
-
         return mapa;
     }
 
@@ -74,21 +72,21 @@ public class ModeloMongo extends Modelo  {
         return null;
     }
 
-    public void insertar(Personaje p) {
+    public void insertar(Personaje personaje) {
         Document personajeInsertar = new Document();
-        personajeInsertar.put("id", p.getId());
-        personajeInsertar.put("nombre", p.getNombre());
-        personajeInsertar.put("rareza", p.getRareza());
-        personajeInsertar.put("idArma", p.getArma().getId());
-        personajeInsertar.put("elemento", p.getElemento());
+        personajeInsertar.put("id", personaje.getId());
+        personajeInsertar.put("nombre", personaje.getNombre());
+        personajeInsertar.put("rareza", personaje.getRareza());
+        personajeInsertar.put("idArma", personaje.getArma().getId());
+        personajeInsertar.put("elemento", personaje.getElemento());
         personajes.insertOne(personajeInsertar);
     }
 
-    public void insertar(Arma a) {
+    public void insertar(Arma arma) {
         Document armaInsertar = new Document();
-        armaInsertar.put("id", a.getId());
-        armaInsertar.put("nombre", a.getNombre());
-        armaInsertar.put("rareza", a.getRareza());
+        armaInsertar.put("id", arma.getId());
+        armaInsertar.put("nombre", arma.getNombre());
+        armaInsertar.put("rareza", arma.getRareza());
         armas.insertOne(armaInsertar);
     }
 
@@ -145,15 +143,15 @@ public class ModeloMongo extends Modelo  {
         armas.findOneAndUpdate(buscar, new Document("$set", modificar));
     }
 
-    public void eliminar(int id) throws SQLException {
+    public void eliminar(int id) {
         personajes.deleteOne(new Document("id", id));
     }
 
-    public void eliminarArma(int id) throws SQLException {
+    public void eliminarArma(int id) {
         armas.deleteOne(new Document("id", id));
     }
 
-    public void escribir(HashMap<Integer, Personaje> mapa, HashMap<Integer, Arma> mapaArmas) throws SQLException {
+    public void escribir(HashMap<Integer, Personaje> mapa, HashMap<Integer, Arma> mapaArmas) {
         personajes.deleteMany(new Document());
         for (Map.Entry<Integer, Personaje> entry : mapa.entrySet()) {
             this.insertar(entry.getValue());
@@ -161,7 +159,7 @@ public class ModeloMongo extends Modelo  {
         this.escribirArma(mapaArmas);
     }
 
-    public void escribirArma(HashMap<Integer, Arma> mapaArma) throws SQLException {
+    public void escribirArma(HashMap<Integer, Arma> mapaArma) {
         armas.deleteMany(new Document());
         for (Map.Entry<Integer, Arma> entry : mapaArma.entrySet()) {
             this.insertar(entry.getValue());

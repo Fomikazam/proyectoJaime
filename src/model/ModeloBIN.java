@@ -13,15 +13,15 @@ import java.util.Map;
 import clases.Personaje;
 
 public class ModeloBIN extends Modelo {
-    private File archivo;
-    private Personaje personaje;
+    private final File archivo;
 
     public ModeloBIN(File archivo) {
         this.archivo = archivo;
     }
 
-    public HashMap<Integer, Personaje> leer() throws IOException, ClassNotFoundException, EOFException {
-        HashMap<Integer, Personaje> mapa = new HashMap<Integer, Personaje>();
+    public HashMap<Integer, Personaje> leer() throws IOException, ClassNotFoundException {
+        HashMap<Integer, Personaje> mapa = new HashMap<>();
+        Personaje personaje;
         FileInputStream fis = new FileInputStream(archivo);
         if (fis.available() > 0) {
             ObjectInputStream ois = new ObjectInputStream(fis);
