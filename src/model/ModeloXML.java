@@ -1,21 +1,11 @@
 package model;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import java.io.FileOutputStream;
-import java.util.InputMismatchException;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
-
-import javax.xml.parsers.ParserConfigurationException;
-import java.util.Scanner;
 
 import org.jdom2.Attribute;
 import org.jdom2.Document;
@@ -24,12 +14,9 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
-import org.xml.sax.SAXException;
 
 import clases.Personaje;
 import clases.Arma;
-
-import org.jdom2.input.SAXBuilder;
 
 public class ModeloXML extends Modelo {
 	private File archivo;
@@ -53,11 +40,9 @@ public class ModeloXML extends Modelo {
 						new Personaje(Integer.parseInt(personaje.getAttributeValue("id")), personaje.getChildText("nombre"),
 								Integer.parseInt(personaje.getChildText("rareza")), weapon,	personaje.getChildText("elemento")));
 			}
-			return mapa;
-		} else {
-			return mapa;
-		}
-	}
+        }
+        return mapa;
+    }
 
 	public void insertar(Personaje p) throws IOException {
 		HashMap<Integer, Personaje> mapa = new HashMap<>();
